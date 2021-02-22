@@ -11,4 +11,4 @@ class FraudTracker(models.Model):
 
 class WhiteListTracker(models.Model):
     ip_address = models.GenericIPAddressField()
-    user = models.ForeignKEy(get_user_model(), on_delete=models.CASCADE)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
