@@ -13,8 +13,8 @@ def handle_fraud_tracking(sender, created, **kwargs):
     related_trackers = FraudTracker.objects.filter(ip_address=sender.ip_address)
     #check if there are too many strikes
     if related_trackers.count() > settings.ALLOWED_STRIKES:
-        # send email to given address
-        # tell flarecloud to block the ip address
+        # TODO: send email to given address
+        # TODO: tell flarecloud to block the ip address
             # if this fails, tell administrator
         pass
     pass

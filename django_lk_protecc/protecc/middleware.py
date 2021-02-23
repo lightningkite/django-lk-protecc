@@ -13,6 +13,13 @@ class ProteccFraudMiddleware:
 
     def __call__(self, request):
         # run imported settings' logic to check if request is fraudulent
+        if settings.contains_fraud is None:
+            raise NotImplementedError(
+            '''
+            contains_fraud is a required method for this middleware,
+            please set in the settings.py
+            '''
+            )
         if settings.contains_fraud(request):
             FraudTracker.objects.create(
                 user=request.user,
