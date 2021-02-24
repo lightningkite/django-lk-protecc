@@ -1,5 +1,11 @@
 ## DJANGO LK PROTECC
 
+### Installation
+```
+pip install git+https://github.com/lightningkite/django-lk-protecc
+                                or
+pip install git+ssh://github.com/lightningkite/django-lk-protecc
+```
 
 ### Plugging in django-lk-protecc into your application
 You'll need to include a few important items in your settings.py
