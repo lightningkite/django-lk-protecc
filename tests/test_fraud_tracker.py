@@ -1,6 +1,6 @@
 from django.test import TestCase
-from protecc.middleware import ProteccFraudMiddleware
-from protecc.models import FraudTracker, WhiteListTracker
+from django_lk_protecc.protecc.middleware import ProteccFraudMiddleware
+from django_lk_protecc.protecc.models import FraudTracker, WhiteListTracker
 from django.conf import settings
 from django.contrib.auth.models import User
 from unittest.mock import Mock
