@@ -21,10 +21,11 @@ class ProteccFraudMiddleware:
             '''
             )
         if settings.contains_fraud(request):
-            FraudTracker.objects.create(
+            fraud_tracker = FraudTracker(
                 user=request.user,
                 request_url=request.url,
-                ip_address=request.REMOTE_ADDR
+                ip_address=request.META.get('REMOTE_ADDR')
             )
+            fraud_tracker.save()
 
         return self.get_response(request)

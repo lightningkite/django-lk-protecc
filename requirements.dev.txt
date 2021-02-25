@@ -1,0 +1,10 @@
+# main dependencies
+-r requirements.txt
+
+#dev
+pytest
+pytest-django
+ipdb
+tox
+flake8
+django-redis

@@ -1,4 +1,4 @@
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from .models import WhiteListTracker, FraudTracker
 from django.conf import settings
@@ -22,6 +22,9 @@ def handle_fraud_tracking(sender, created, **kwargs):
 @receiver(post_save, sender=WhiteListTracker)
 def add_whitelist_cache(sender, **kwargs):
     # resets the cache for whitelisted ip addresses
-    cache.delete_many(cache.keys('*-whitelisted-ip'))
-    for tracker in WhiteListTracker.objects.all():
-        cache.set(tracker.ip_address, tracker.pk) 
+    cache.set(f'{sender.ip_address}-whitelisted-ip', sender.pk) 
+
+@receiver(post_delete, sender=WhiteListTracker)
+def remove_whitelist_cache(sender, **kwargs):
+    # resets the cache for whitelisted ip addresses
+    cache.delete(f'{sender.ip_address}-whitelisted-ip')
