@@ -7,4 +7,3 @@ pytest-django
 ipdb
 tox
 flake8
-django-redis

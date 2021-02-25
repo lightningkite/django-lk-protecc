@@ -4,6 +4,8 @@ from .models import WhiteListTracker, FraudTracker
 from django.conf import settings
 from django.core.cache import cache
 from django.core.mail import send_mail
+import requests
+import json
 
 @receiver(post_save, sender=FraudTracker)
 def handle_fraud_tracking(sender, instance, created, **kwargs):
@@ -18,8 +20,9 @@ def handle_fraud_tracking(sender, instance, created, **kwargs):
             'An IP address has been blocked in your application',
             f'Site: {settings.SITE_NAME} \nIP address: {instance.ip_address} \nurl history: {urls}'
         )
-        # TODO: tell flarecloud to block the ip address
-            # if this fails, tell administrator
+        # TODO: tell the administrator if it fails
+        block_ip_address(instance.ip_address)
+
 
 @receiver(post_save, sender=WhiteListTracker)
 def add_whitelist_cache(sender, instance, **kwargs):
@@ -31,3 +34,22 @@ def remove_whitelist_cache(sender, instance, **kwargs):
 
 def alert_admin(subject, message, from_email=None, **kwargs):
     send_mail(subject, message, from_email, [settings.ADMIN_EMAIL], **kwargs)
+
+def block_ip_address(ip_address):
+    headers = {
+        'X-Auth-Email': settings.CL_AUTH_EMAIL,
+        'X-Auth-Key': settings.CL_AUTH_KEY,
+        'Content-Type': 'application/json',
+    }
+
+    data = {
+        'ip': ip_address,
+        'comment': f'blocked ip for {settings.SITE_NAME}' 
+    }
+
+    response = requests.post(
+        f'https://api.cloudflare.com/client/v4/accounts/{settings.ACCOUNT_ID}/rules/lists/{settings.LIST_ID}/items',
+        headers=headers,
+        data=json.dumps(data)
+    )
+    return response

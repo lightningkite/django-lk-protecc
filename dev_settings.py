@@ -6,7 +6,7 @@ def settings(BASE_DIR=os.getcwd()):
 
     DEBUG = True
 
-    ALLOWED_STRIKES = 1
+    ALLOWED_STRIKES = 3
 
     SITE_NAME = 'fake-project'
 

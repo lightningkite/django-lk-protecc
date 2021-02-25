@@ -24,3 +24,7 @@ To keep track of a view's fraudulent behavior include the following decorator
 @decorator_from_middleware(<path to protecc's middleware class>)
 your_view()
 ```
+
+### Developing in the package
+- to run tests run `tox`
+- to make migrations run `python dev_make_migrations.py`
