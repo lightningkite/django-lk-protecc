@@ -6,6 +6,14 @@ def settings(BASE_DIR=os.getcwd()):
 
     DEBUG = True
 
+    ALLOWED_STRIKES = 1
+
+    SITE_NAME = 'fake-project'
+
+    ADMIN_EMAIL = 'example@gmail.com'
+
+    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -56,7 +64,8 @@ def settings(BASE_DIR=os.getcwd()):
 
     CACHES = {
         'default': {
-            'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+            'LOCATION': 'unique-snowflake',
         }
     }
 

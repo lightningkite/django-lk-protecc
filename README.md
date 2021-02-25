@@ -16,6 +16,7 @@ You'll need to include a few important items in your settings.py
     - for cloudflare you'll need the `ACCOUNT_IDENTIFIER` and your `LIST_ID`
     - for authentication you'll need your `CL_AUTH_EMAIL` and your `CL_AUTH_KEY`
 4. `ADMIN_EMAIL` - a string of the email that will receive alerts about fraud
+5. `SITE_NAME` - a string of the name of your application that will appear in the email
 
 To keep track of a view's fraudulent behavior include the following decorator
 - reference: https://docs.djangoproject.com/en/3.1/ref/utils/#django.utils.decorators.decorator_from_middleware

@@ -55,7 +55,5 @@ class FraudTrackerTests(TestCase):
     def test_whitelisting(self):
         white_list_tracker = WhiteListTracker(user=self.request.user, ip_address=self.request.META.get('REMOTE_ADDR'))
         white_list_tracker.save()
-        settings.contains_fraud = lambda request: True
-        self.middleware.__call__(self.request)
         self.assertIsNotNone(cache.get(f'{self.request.META.get("REMOTE_ADDR")}-whitelisted-ip'))
 
