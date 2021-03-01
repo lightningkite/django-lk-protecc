@@ -20,9 +20,13 @@ def handle_fraud_tracking(sender, instance, created, **kwargs):
             'An IP address has been blocked in your application',
             f'Site: {settings.SITE_NAME} \nIP address: {instance.ip_address} \nurl history: {urls}'
         )
-        # TODO: tell the administrator if it fails
-        block_ip_address(instance.ip_address)
 
+        response = block_ip_address(instance.ip_address)
+        if response.json().get('success') == False:
+            alert_admin(
+                'a request to block an IP address has failed',
+                f'Site: {settings.SITE_NAME} \nIP address: {instance.ip_address} \nresponse: {response.json()}'
+            )
 
 @receiver(post_save, sender=WhiteListTracker)
 def add_whitelist_cache(sender, instance, **kwargs):
@@ -48,8 +52,9 @@ def block_ip_address(ip_address):
     }
 
     response = requests.post(
-        f'https://api.cloudflare.com/client/v4/accounts/{settings.ACCOUNT_ID}/rules/lists/{settings.LIST_ID}/items',
+        f'https://api.cloudflare.com/client/v4/accounts/{settings.CL_ACCOUNT_ID}/rules/lists/{settings.CL_LIST_ID}/items',
         headers=headers,
-        data=json.dumps(data)
+        data=f'[{json.dumps(data)}]'
     )
+
     return response
