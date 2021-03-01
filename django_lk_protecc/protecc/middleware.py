@@ -7,11 +7,7 @@ class ProteccFraudMiddleware:
     to determine if it's a possible occasion of fraud. 
     If it is a fraudulent request, we can log the FraudTracker for the ip address 
     """
-
-    def __init__(self, get_response):
-        self.get_response = get_response
-
-    def __call__(self, request):
+    def process_request(self, request):
         # run imported settings' logic to check if request is fraudulent
         if settings.contains_fraud is None:
             raise NotImplementedError(
@@ -28,4 +24,4 @@ class ProteccFraudMiddleware:
             )
             fraud_tracker.save()
 
-        return self.get_response(request)
+        return None

@@ -31,23 +31,23 @@ class FraudTrackerTests(TestCase):
         self.request.user = User.objects.create_user('johnny', 'johnny@example.com', 'johnpassword')
         self.request.url = '/testURL/'
         self.request.session = {}
-        self.middleware = ProteccFraudMiddleware(lambda response: None)
+        self.middleware = ProteccFraudMiddleware()
         FraudTracker.objects.all().delete()
 
     def test_fraud_middleware(self):
         settings.contains_fraud = lambda request: True
-        self.middleware.__call__(self.request)
+        self.middleware.process_request(self.request)
         self.assertEqual(FraudTracker.objects.all().count(), 1)
 
     def test_no_fraud_middleware(self):
         settings.contains_fraud = lambda request: False
-        self.middleware.__call__(self.request)
+        self.middleware.process_request(self.request)
         self.assertEqual(FraudTracker.objects.all().count(), 0)
     
     def test_contains_fraud_not_implemented(self):
         try:
             settings.contains_fraud = None
-            self.middleware.__call__(self.request)
+            self.middleware.process_request(self.request)
             self.fail('the middleware should throw an error without a contains_fraud function')
         except NotImplementedError:
             pass
