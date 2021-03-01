@@ -35,20 +35,20 @@ class FraudTrackerTests(TestCase):
         FraudTracker.objects.all().delete()
 
     def test_fraud_middleware(self):
-        settings.contains_fraud = lambda request: True
+        settings.CHECK_CONTAINS_FRAUD = lambda request: True
         self.middleware.process_request(self.request)
         self.assertEqual(FraudTracker.objects.all().count(), 1)
 
     def test_no_fraud_middleware(self):
-        settings.contains_fraud = lambda request: False
+        settings.CHECK_CONTAINS_FRAUD = lambda request: False
         self.middleware.process_request(self.request)
         self.assertEqual(FraudTracker.objects.all().count(), 0)
     
     def test_contains_fraud_not_implemented(self):
         try:
-            settings.contains_fraud = None
+            settings.CHECK_CONTAINS_FRAUD = None
             self.middleware.process_request(self.request)
-            self.fail('the middleware should throw an error without a contains_fraud function')
+            self.fail('the middleware should throw an error without a CHECK_CONTAINS_FRAUD function')
         except NotImplementedError:
             pass
     

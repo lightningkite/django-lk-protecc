@@ -9,14 +9,14 @@ class ProteccFraudMiddleware:
     """
     def process_request(self, request):
         # run imported settings' logic to check if request is fraudulent
-        if settings.contains_fraud is None:
+        if settings.CHECK_CONTAINS_FRAUD is None:
             raise NotImplementedError(
             '''
-            contains_fraud is a required method for this middleware,
+            CHECK_CONTAINS_FRAUD is a required method for this middleware,
             please set in the settings.py
             '''
             )
-        if settings.contains_fraud(request):
+        if settings.CHECK_CONTAINS_FRAUD(request):
             fraud_tracker = FraudTracker(
                 user=request.user,
                 request_url=request.url,
