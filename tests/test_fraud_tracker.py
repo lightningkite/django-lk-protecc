@@ -29,7 +29,7 @@ class FraudTrackerTests(TestCase):
         }
 
         self.request.user = User.objects.create_user('johnny', 'johnny@example.com', 'johnpassword')
-        self.request.url = '/testURL/'
+        self.request.build_absolute_uri = lambda : '/Test/url'
         self.request.session = {}
         self.middleware = ProteccFraudMiddleware()
         FraudTracker.objects.all().delete()
