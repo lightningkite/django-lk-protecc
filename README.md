@@ -24,6 +24,12 @@ To keep track of a view's fraudulent behavior include the following decorator
 @decorator_from_middleware(<path to protecc's middleware class>)
 your_view()
 ```
+- there are two middleware classes available
+    - ProteccFraudViewMiddleware
+        - this uses process_view() which will fire off before the view is called
+            - this is useful if you want to use the view's arguments
+    - ProteccFraudRequestMiddleware
+        - this uses process_request() which will purely be passing in the request and its contents
 
 ### Developing in the package
 - to run tests run `tox`

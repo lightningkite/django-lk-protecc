@@ -7,7 +7,7 @@ settings.configure(**settings_params)
 django.setup()
 
 from django.test import TestCase
-from django_lk_protecc.protecc.middleware import ProteccFraudMiddleware
+from django_lk_protecc.protecc.middleware import ProteccFraudViewMiddleware, ProteccFraudRequestMiddleware
 from django_lk_protecc.protecc.models import FraudTracker, WhiteListTracker
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -31,23 +31,34 @@ class FraudTrackerTests(TestCase):
         self.request.user = User.objects.create_user('johnny', 'johnny@example.com', 'johnpassword')
         self.request.build_absolute_uri = lambda : '/Test/url'
         self.request.session = {}
-        self.middleware = ProteccFraudMiddleware()
+        self.request_middleware = ProteccFraudRequestMiddleware()
+        self.view_middleware = ProteccFraudViewMiddleware()
         FraudTracker.objects.all().delete()
 
-    def test_fraud_middleware(self):
-        settings.CHECK_CONTAINS_FRAUD = lambda request: True
-        self.middleware.process_request(self.request)
+    def test_fraud_request_middleware(self):
+        settings.CHECK_CONTAINS_FRAUD = lambda request, *args, **kwargs: True
+        self.request_middleware.process_request(self.request)
         self.assertEqual(FraudTracker.objects.all().count(), 1)
 
-    def test_no_fraud_middleware(self):
-        settings.CHECK_CONTAINS_FRAUD = lambda request: False
-        self.middleware.process_request(self.request)
+    def test_no_fraud_request_middleware(self):
+        settings.CHECK_CONTAINS_FRAUD = lambda request, *args, **kwargs: False
+        self.request_middleware.process_request(self.request)
+        self.assertEqual(FraudTracker.objects.all().count(), 0)
+
+    def test_fraud_view_middleware(self):
+        settings.CHECK_CONTAINS_FRAUD = lambda request, *args, **kwargs: True
+        self.view_middleware.process_view(self.request, 'a value', 'another value')
+        self.assertEqual(FraudTracker.objects.all().count(), 1)
+
+    def test_no_fraud_view_middleware(self):
+        settings.CHECK_CONTAINS_FRAUD = lambda request, *args, **kwargs: False
+        self.view_middleware.process_view(self.request, 'a value', 'another value')
         self.assertEqual(FraudTracker.objects.all().count(), 0)
     
     def test_contains_fraud_not_implemented(self):
         try:
             settings.CHECK_CONTAINS_FRAUD = None
-            self.middleware.process_request(self.request)
+            self.request_middleware.process_request(self.request)
             self.fail('the middleware should throw an error without a CHECK_CONTAINS_FRAUD function')
         except NotImplementedError:
             pass
