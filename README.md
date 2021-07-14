@@ -38,7 +38,7 @@ your_view()
 
 ### Getting your information
 - it is likely that you are a normal human being and you do not know how to get arbitrary information from cloud flare. Turns out that cloudflare is one of the least friendly websites to navigate!
-- here's some steps I found useful:
+#### here's some steps I found useful:
 how to get your account id (`CL_ACCOUNT_ID`): 
 - go to the home page https://dash.cloudflare.com/
 - click on your account (listed as emails)
