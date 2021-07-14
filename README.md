@@ -37,7 +37,7 @@ your_view()
 
 
 ### Getting your information
-- it is likely that you are a normal human being and you do not know how to get arbitrary information from cloud flare. Turns out that cloudflare is one of the least friendly websites to navigate!
+- It is likely that you are a normal human being and you do not know how to get arbitrary information from cloudflare. Turns out that cloudflare is one of the least friendly websites to navigate!
 #### here are some steps I found useful:
 how to get your account id (`CL_ACCOUNT_ID`): 
 - go to the home page https://dash.cloudflare.com/
@@ -58,3 +58,12 @@ curl -X GET "https://api.cloudflare.com/client/v4/accounts/<insert account id he
  ```
 - the problem with the call is that it doesn't use the list name, which it should because that's how they display it, but no, they use this arbitrary number that you have to use an api call to find (at least I couldn't find another way to get it)
 - Fire off this call and get the id from the list you want, they should be displayed and it will be easy enough to find the one you want.
+
+You think you got it? Go ahead, test it out:
+```
+curl -X POST "https://api.cloudflare.com/client/v4/accounts/<account id>/rules/lists/<list id>/items" \
+     -H "X-Auth-Email: <account email>" \
+     -H "X-Auth-Key: <api key>" \
+     -H "Content-Type: application/json" \
+     --data '[{"ip":"10.0.0.1","comment":"Private IP address"}]'
+```
