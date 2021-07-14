@@ -34,3 +34,17 @@ your_view()
 ### Developing in the package
 - to run tests run `tox`
 - to make migrations run `python dev_make_migrations.py`
+
+
+### Getting your information
+- it is likely that you are a normal human being and you do not know how to get arbitrary information from cloud flare. Turns out that cloudflare is one of the least friendly websites to navigate!
+- here's some steps I found useful:
+how to get your account id (`CL_ACCOUNT_ID`): 
+- go to the home page https://dash.cloudflare.com/
+- click on your account (listed as emails)
+- click on workers under the home section
+- your account id will be on the right 
+
+how to get your api key (`CL_AUTH_KEY`):
+https://dash.cloudflare.com/profile/api-tokens
+- go to the api KEYS section, there will probably be a token section too, do NOT use that one
