@@ -11,6 +11,9 @@ import json
 def handle_fraud_tracking(sender, instance, created, **kwargs):
     if cache.get(f'{instance.ip_address}-whitelisted-ip'):
         return
+    elif WhiteListTracker.objects.filter(ip_address=instance.ip_address).exists():
+        cache.set(f'{instance.ip_address}-whitelisted-ip', instance.pk)
+        return
 
     related_trackers = FraudTracker.objects.filter(ip_address=instance.ip_address)
 

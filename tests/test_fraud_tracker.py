@@ -10,7 +10,7 @@ from django.test import TestCase
 from django_lk_protecc.protecc.middleware import ProteccFraudViewMiddleware, ProteccFraudRequestMiddleware
 from django_lk_protecc.protecc.models import FraudTracker, WhiteListTracker
 from django.conf import settings
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AnonymousUser
 from django.core.cache import cache
 from unittest.mock import Mock
 
@@ -36,24 +36,31 @@ class FraudTrackerTests(TestCase):
         FraudTracker.objects.all().delete()
 
     def test_fraud_request_middleware(self):
-        settings.CHECK_CONTAINS_FRAUD = lambda request, *args, **kwargs: True
+        settings.CHECK_CONTAINS_FRAUD = lambda request, *args, **kwargs: (True, None)
         self.request_middleware.process_request(self.request)
         self.assertEqual(FraudTracker.objects.all().count(), 1)
 
     def test_no_fraud_request_middleware(self):
-        settings.CHECK_CONTAINS_FRAUD = lambda request, *args, **kwargs: False
+        settings.CHECK_CONTAINS_FRAUD = lambda request, *args, **kwargs: (False, None)
         self.request_middleware.process_request(self.request)
         self.assertEqual(FraudTracker.objects.all().count(), 0)
 
     def test_fraud_view_middleware(self):
-        settings.CHECK_CONTAINS_FRAUD = lambda request, *args, **kwargs: True
+        settings.CHECK_CONTAINS_FRAUD = lambda request, *args, **kwargs: (True, None)
         self.view_middleware.process_view(self.request, 'a value', 'another value')
         self.assertEqual(FraudTracker.objects.all().count(), 1)
 
     def test_no_fraud_view_middleware(self):
-        settings.CHECK_CONTAINS_FRAUD = lambda request, *args, **kwargs: False
+        settings.CHECK_CONTAINS_FRAUD = lambda request, *args, **kwargs: (False, None)
         self.view_middleware.process_view(self.request, 'a value', 'another value')
         self.assertEqual(FraudTracker.objects.all().count(), 0)
+
+    def test_fraud_view_middleware_anonymous_user(self):
+        settings.CHECK_CONTAINS_FRAUD = lambda request, *args, **kwargs: (True, {'user_email': 'anonymoususer@fraud.com'})
+        self.request.user = AnonymousUser()
+        self.view_middleware.process_view(self.request, 'a value', 'another value')
+        self.assertEqual(FraudTracker.objects.first().user_email, 'anonymoususer@fraud.com')
+        self.assertEqual(FraudTracker.objects.all().count(), 1)
     
     def test_contains_fraud_not_implemented(self):
         try:

@@ -16,11 +16,14 @@ class ProteccFraudRequestMiddleware:
             please set in the settings.py
             '''
             )
-        if settings.CHECK_CONTAINS_FRAUD(request, *args, **kwargs):
+        is_fraudulent, optional_attrs = settings.CHECK_CONTAINS_FRAUD(request, *args, **kwargs)
+        if is_fraudulent:
+            user_email = optional_attrs.get('user_email', None) if optional_attrs else None
             fraud_tracker = FraudTracker(
-                user=request.user,
+                user=request.user if not request.user_is_anonymous else None,
                 request_url=request.build_absolute_uri(),
-                ip_address=request.META.get('REMOTE_ADDR')
+                ip_address=request.META.get('REMOTE_ADDR'),
+                user_email=user_email
             )
             fraud_tracker.save()
 
@@ -41,11 +44,14 @@ class ProteccFraudViewMiddleware:
             please set in the settings.py
             '''
             )
-        if settings.CHECK_CONTAINS_FRAUD(request, *args, **kwargs):
+        is_fraudulent, optional_attrs = settings.CHECK_CONTAINS_FRAUD(request, *args, **kwargs)
+        if is_fraudulent:
+            user_email = optional_attrs.get('user_email', None) if optional_attrs else None
             fraud_tracker = FraudTracker(
-                user=request.user,
+                user=request.user if not request.user.is_anonymous else None,
                 request_url=request.build_absolute_uri(),
-                ip_address=request.META.get('REMOTE_ADDR')
+                ip_address=request.META.get('REMOTE_ADDR'),
+                user_email=user_email
             )
             fraud_tracker.save()
 
