@@ -59,7 +59,7 @@ your_view()
     - fields
         - user
         - ip_address
-        - user_emailj (optional)
+        - user_email (optional)
 
 ### Getting your information
 - It is likely that you are a normal human being and you do not know how to get arbitrary information from cloudflare. Turns out that cloudflare is one of the least friendly websites to navigate!
