@@ -9,7 +9,19 @@ pip install git+ssh://github.com/lightningkite/django-lk-protecc
 
 ### Plugging in django-lk-protecc into your application
 You'll need to include a few important items in your settings.py
-1. `contains_fraud` - function that takes a request as a parameter and returns a boolean
+1. `contains_fraud` - function that takes a request as a parameter and returns a tuple. 
+    - You must return a tuple of (boolean, dictionary(nullable)), the boolean represents if the request contains fraud, the dictionary contains optional attributes for the FraudTracker model.
+        - example:
+        ```
+            contains_fraud(request, *args, **kwargs):
+                order = args[0]
+                return True, {'user_email': order.email}
+        ``` 
+        or
+        ```
+            contains_fraud(request, *args, **kwargs):
+                return True, None
+        ```
 2. `ALLOWED_STRIKES` - an int that determines how many strikes an ip address can have
 3. Cloudflare information
     - the request: POST accounts/:account_identifier/rules/lists/:list_id/items
@@ -35,6 +47,19 @@ your_view()
 - to run tests run `tox`
 - to make migrations run `python dev_make_migrations.py`
 
+### Available Models
+- FraudTracker
+    - fields:
+        - user
+        - request_url
+        - created_at
+        - ip_address
+        - user_email (this is optional, passed through the optional attrs in `contains_fraud`)
+- WhiteListTracker
+    - fields
+        - user
+        - ip_address
+        - user_email (optional)
 
 ### Getting your information
 - It is likely that you are a normal human being and you do not know how to get arbitrary information from cloudflare. Turns out that cloudflare is one of the least friendly websites to navigate!
