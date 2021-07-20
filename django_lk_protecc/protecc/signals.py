@@ -22,7 +22,7 @@ def handle_fraud_tracking(sender, instance, created, **kwargs):
     message = f'Site: {settings.SITE_NAME} \nIP address: {instance.ip_address}'
     url_message = f'\nurl {instance.request_url}'
     message += url_message
-    user = instance.user.username if instance.user else 'Anonymous User'
+    user = instance.user if instance.user else 'Anonymous User'
     message += f'\nUser: {user}'
     email =  instance.user_email if not instance.user else instance.user.email
     message += f'\nEmail: {email}' if email else ''
