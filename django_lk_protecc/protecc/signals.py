@@ -15,9 +15,11 @@ def handle_fraud_tracking(sender, instance, created, **kwargs):
         cache.set(f'{instance.ip_address}-whitelisted-ip', instance.pk)
         return
 
+    related_trackers = FraudTracker.objects.filter(ip_address=instance.ip_address)
     expiration_delta = getattr(settings, 'DAYS_TO_EXPIRATION', None)
-    time_range = datetime.now() - timedelta(days=expiration_delta or 0)
-    related_trackers = FraudTracker.objects.filter(ip_address=instance.ip_address, created_at__gt=time_range)
+    if expiration_delta:
+        time_range = datetime.now() - timedelta(days=expiration_delta)
+        related_trackers = related_trackers.filter(created_at__gt=time_range)
 
     message = f'Site: {settings.SITE_NAME} \nIP address: {instance.ip_address}'
     url_message = f'\nurl {instance.request_url}'
