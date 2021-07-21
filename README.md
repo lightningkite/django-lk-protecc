@@ -29,6 +29,7 @@ You'll need to include a few important items in your settings.py
     - for authentication you'll need your `CL_AUTH_EMAIL` and your `CL_AUTH_KEY`
 4. `ADMIN_EMAIL` - a string of the email that will receive alerts about fraud
 5. `SITE_NAME` - a string of the name of your application that will appear in the email
+6. `DAYS_TO_EXPIRATION` - an int of the number of days that a FraudTracker will no longer be considered as a strike (optional)
 
 To keep track of a view's fraudulent behavior include the following decorator
 - reference: https://docs.djangoproject.com/en/3.1/ref/utils/#django.utils.decorators.decorator_from_middleware
