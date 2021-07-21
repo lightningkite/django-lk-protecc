@@ -1,5 +1,5 @@
 __title__ = 'django_lk_protecc'
-__version__ = 'v1.1.0'
+__version__ = 'v1.1.1'
 __author__ = 'lightningkite'
 __license__ = 'tba'
 __copyright__ = 'Copyright 2021 lightningkite'
