@@ -47,11 +47,13 @@ class ProteccFraudViewMiddleware:
         is_fraudulent, optional_attrs = settings.CHECK_CONTAINS_FRAUD(request, *args, **kwargs)
         if is_fraudulent:
             user_email = optional_attrs.get('user_email', None) if optional_attrs else None
+            extra_content = optional_attrs.get('extra_content', None) if optional_attrs else None
             fraud_tracker = FraudTracker(
                 user=request.user if not request.user.is_anonymous else None,
                 request_url=request.build_absolute_uri(),
                 ip_address=get_ip_from_request(request),
-                user_email=user_email
+                user_email=user_email,
+                message=extra_content,
             )
             fraud_tracker.save()
 
