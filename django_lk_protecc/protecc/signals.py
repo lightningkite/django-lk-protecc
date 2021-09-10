@@ -28,6 +28,8 @@ def handle_fraud_tracking(sender, instance, created, **kwargs):
     message += f'\nUser: {user}'
     email =  instance.user_email if not instance.user else instance.user.email
     message += f'\nEmail: {email}' if email else ''
+    extra_content = f'\n{instance.message}' if instance.message else ''
+    message += extra_content
     alert_admin(f'A request has been determined fraudulent in your app, currently the strike count is: {related_trackers.count()}', message)
 
     if related_trackers.count() >= settings.ALLOWED_STRIKES:

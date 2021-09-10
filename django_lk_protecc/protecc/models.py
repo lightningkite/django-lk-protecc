@@ -10,6 +10,7 @@ class FraudTracker(models.Model):
     ip_address = models.GenericIPAddressField()
     # in case your user is an anonymous user, but you would like to store the email associated, you can use user_email
     user_email = models.EmailField(null=True)
+    message = models.TextField(null=True)
 
 class WhiteListTracker(models.Model):
     ip_address = models.GenericIPAddressField()

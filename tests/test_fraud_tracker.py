@@ -61,6 +61,20 @@ class FraudTrackerTests(TestCase):
         self.view_middleware.process_view(self.request, 'a value', 'another value')
         self.assertEqual(FraudTracker.objects.first().user_email, 'anonymoususer@fraud.com')
         self.assertEqual(FraudTracker.objects.all().count(), 1)
+
+    def test_fraud_view_middleware_extra_content(self):
+        extra_content = '''
+            Hey there! This is some extra content with a few things
+            - thing 1
+            - thing 2
+            - thing 3
+            - facebook.com
+        '''
+        settings.CHECK_CONTAINS_FRAUD = lambda request, *args, **kwargs: (True, {'user_email': 'anonymoususer@fraud.com', 'extra_content': extra_content})
+        self.request.user = AnonymousUser()
+        self.view_middleware.process_view(self.request, 'a value', 'another value')
+        self.assertEqual(FraudTracker.objects.first().user_email, 'anonymoususer@fraud.com')
+        self.assertEqual(FraudTracker.objects.all().count(), 1)
     
     def test_contains_fraud_not_implemented(self):
         try:
