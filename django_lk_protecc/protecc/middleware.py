@@ -1,12 +1,19 @@
 from .models import FraudTracker
 from django.conf import settings
 
+
 class ProteccFraudRequestMiddleware:
     """
     Middleware that will take a request to make a tracked_model and run logic
     to determine if it's a possible occasion of fraud. 
     If it is a fraudulent request, we can log the FraudTracker for the ip address 
     """
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        return self.get_response(request)
+
     def process_request(self, request, *args, **kwargs):
         # run imported settings' logic to check if request is fraudulent
         if settings.CHECK_CONTAINS_FRAUD is None:
@@ -29,12 +36,19 @@ class ProteccFraudRequestMiddleware:
 
         return None
 
+
 class ProteccFraudViewMiddleware:
     """
     Middleware that will take a request to make a tracked_model and run logic
     to determine if it's a possible occasion of fraud. 
     If it is a fraudulent request, we can log the FraudTracker for the ip address 
     """
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        return self.get_response(request)
+
     def process_view(self, request, *args, **kwargs):
         # run imported settings' logic to check if request is fraudulent
         if settings.CHECK_CONTAINS_FRAUD is None:
