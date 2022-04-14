@@ -3,7 +3,7 @@ from django.db.models.signals import post_save
 
 
 class ProteccConfig(AppConfig):
-    name = 'django_lk_protecc.protecc'
+    name = 'protecc'
 
     def ready(self):
         from . import signals
